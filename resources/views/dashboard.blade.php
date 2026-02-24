@@ -1,17 +1,31 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
+@if(auth()->user()->is_admin)
+    <div class="admin-panel">
+        <a href="/admin/stats">Statistiques</a>
+        <a href="/admin/users">Gérer les Utilisateurs</a>
     </div>
-</x-app-layout>
+@endif
+
+@foreach($pendingInvitations as $invitation)
+    <div class="alert alert-info">
+        Tu as une invitation pour rejoindre : {{ $invitation->colocation->name }}
+        <button>Accepter</button>
+        <button>Refuser</button>
+    </div>
+@endforeach
+
+@if(!$activeColocation)
+    <div class="mt-4">
+        <a href="{{ route('colocation.create') }}" class="btn btn-primary">
+            Créer une Colocation
+        </a>
+    </div>
+@else
+    <h2>Ta Colocation : {{ $activeColocation->colocation->name }}</h2>
+@endif
+
+@if($historyColocations->count() > 0)
+    <h3>Historique de tes colocations</h3>
+    @foreach($historyColocations as $history)
+        <p>{{ $history->colocation->name }} (Terminée)</p>
+    @endforeach
+@endif

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Colocation;
 use Illuminate\Http\Request;
+use App\Models\Membership;
 
 class ColocationController extends Controller
 {
@@ -19,17 +20,32 @@ class ColocationController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        //
-    }
+{
+    return view('colocations.create');
+}
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+    ]);
+
+    $colocation = Colocation::create([
+        'name' => $request->name,
+        'description' => $request->description,
+        'status' => 'active',
+    ]);
+
+    Membership::create([
+        'user_id' => auth()->id(),
+        'colocation_id' => $colocation->id,
+        'role' => 'owner',
+        'joined_at' => now(),
+    ]);
+
+    return redirect()->route('dashboard')->with('success', 'Colocation créée avec succès !');
+}
 
     /**
      * Display the specified resource.
