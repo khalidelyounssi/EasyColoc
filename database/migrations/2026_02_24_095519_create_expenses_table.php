@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('expenses', function (Blueprint $table) {
     $table->id();
+    $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
+    $table->foreignId('colocation_id')->constrained()->onDelete('cascade');
+    $table->foreignId('category_id')->constrained()->onDelete('cascade');
     $table->string('title');
     $table->decimal('amount', 10, 2);
-    $table->date('date');
-    $table->foreignId('payer_id')->constrained('users'); 
-    $table->foreignId('colocation_id')->constrained();
-    $table->softDeletes();
+    $table->date('spent_at');
     $table->timestamps();
 });
     }

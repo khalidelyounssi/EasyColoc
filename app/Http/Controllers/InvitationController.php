@@ -1,65 +1,46 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Invitation;
+use App\Models\Colocation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use App\Models\Membership;
 
 class InvitationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function store(Request $request, Colocation $colocation)
     {
-        //
-    }
+        $request->validate([
+            'email' => 'required|email',
+        ]);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        $token = Str::random(32);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        Invitation::create([
+            'email' => $request->email,
+            'token' => $token,
+            'colocation_id' => $colocation->id,
+            'status' => 'pending',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Invitation $invitation)
-    {
-        //
+        return back()->with('success', 'Invitation envoyée avec succès !');
     }
+    public function accept($token)
+{
+    $invitation = Invitation::where('token', $token)
+        ->where('status', 'pending')
+        ->firstOrFail();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Invitation $invitation)
-    {
-        //
-    }
+    Membership::create([
+        'user_id' => auth()->id(),
+        'colocation_id' => $invitation->colocation_id,
+        'role' => 'member',
+        'joined_at' => now(),
+    ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Invitation $invitation)
-    {
-        //
-    }
+    $invitation->update(['status' => 'accepted']);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Invitation $invitation)
-    {
-        //
-    }
+    return redirect()->route('dashboard')->with('success', 'Vous avez rejoint la colocation !');
+}
 }

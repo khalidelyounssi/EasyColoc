@@ -6,15 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class Expense extends Model
 {
-    public function payer() {
-    return $this->belongsTo(User::class, 'payer_id');
-}
+    protected $fillable = [
+        'user_id',
+        'colocation_id',
+        'category_id',
+        'title',
+        'amount',
+        'spent_at',
+    ];
 
-public function category() {
-    return $this->belongsTo(Category::class);
-}
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 
-public function colocation() {
-    return $this->belongsTo(Colocation::class);
-}
+    public function category() {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function colocation() {
+        return $this->belongsTo(Colocation::class);
+    }
 }

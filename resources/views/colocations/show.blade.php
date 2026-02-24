@@ -1,81 +1,115 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+    <div class="py-12 px-6 max-w-7xl mx-auto space-y-8 bg-[#FAFAFA] min-h-screen font-sans antialiased">
+        
+        <header class="bg-white rounded-[2rem] p-10 border border-[#F5F5F7] shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
-                <h2 class="font-bold text-2xl text-gray-900 leading-tight">
-                    🏠 {{ $colocation->name }}
-                </h2>
-                <p class="text-gray-500 text-sm mt-1">{{ $colocation->description }}</p>
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-2 block">Space Details</span>
+                <h1 class="text-5xl font-bold text-[#1D1D1F] tracking-tighter leading-tight">{{ $colocation->name }}</h1>
+                <p class="text-gray-500 font-medium mt-4 max-w-xl">{{ $colocation->description }}</p>
             </div>
+            <button onclick="document.getElementById('expenseModal').classList.remove('hidden')" 
+                class="bg-black text-white px-10 py-5 rounded-full font-bold text-sm shadow-xl hover:scale-105 transition-all shrink-0">
+                + Ajouter une dépense
+            </button>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            @if($membership->role === 'owner')
-                <div class="mt-4 md:mt-0 flex space-x-2">
-                    <button class="bg-indigo-600 text-white px-5 py-2 rounded-xl shadow-sm hover:bg-indigo-700 transition font-semibold flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
-                        Inviter un membre
-                    </button>
-                    <button class="bg-white text-gray-700 border border-gray-200 px-5 py-2 rounded-xl shadow-sm hover:bg-gray-50 transition font-semibold">
-                        Paramètres
-                    </button>
+            <div class="lg:col-span-8 bg-white rounded-[2.5rem] p-10 border border-[#F5F5F7] shadow-sm">
+                <div class="flex justify-between items-center mb-10">
+                    <h3 class="text-xl font-bold text-[#1D1D1F]">Historique des transactions</h3>
+                    <span class="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Mise à jour en direct</span>
                 </div>
-            @endif
-        </div>
-    </x-slot>
-
-    <div class="py-12 bg-gray-50 min-h-screen">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-xl font-bold text-gray-800">Dépenses Récentes</h3>
-                            <a href="#" class="text-indigo-600 font-bold text-sm hover:underline">+ Nouvelle dépense</a>
-                        </div>
-
-                        <div class="text-center py-12 border-2 border-dashed border-gray-100 rounded-xl">
-                            <div class="bg-gray-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
-                                <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            </div>
-                            <p class="text-gray-400">Aucune dépense enregistrée pour le moment.</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-6">Qui doit quoi ?</h3>
-                        <div class="bg-green-50 p-4 rounded-xl text-green-700 font-medium text-sm">
-                            🎉 Tous les comptes sont à jour !
-                        </div>
-                    </div>
-                </div>
-
                 <div class="space-y-6">
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                        <h3 class="font-bold text-gray-800 mb-4 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                            Membres ({{ $members->count() }})
-                        </h3>
-                        <div class="space-y-4">
-                            @foreach($members as $m)
-                                <div class="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition">
-                                    <div class="flex items-center">
-                                        <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold mr-3">
-                                            {{ strtoupper(substr($m->user->name, 0, 1)) }}
-                                        </div>
-                                        <div>
-                                            <div class="text-sm font-bold text-gray-800">{{ $m->user->name }}</div>
-                                            <div class="text-xs text-gray-400 capitalize">{{ $m->role }}</div>
-                                        </div>
-                                    </div>
-                                    @if($m->role === 'owner')
-                                        <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                                    @endif
+                    @forelse($colocation->expenses->sortByDesc('spent_at') as $expense)
+                        <div class="flex items-center justify-between p-6 hover:bg-[#FAFAFA] rounded-3xl transition-colors group">
+                            <div class="flex items-center space-x-6">
+                                <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-2xl shadow-sm border border-gray-50 group-hover:scale-110 transition-transform">
+                                    🛒
                                 </div>
-                            @endforeach
+                                <div>
+                                    <p class="font-bold text-gray-900 text-lg">{{ $expense->title }}</p>
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                                        {{ $expense->user->name }} • {{ \Carbon\Carbon::parse($expense->spent_at)->format('d M') }}
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="text-2xl font-bold text-[#1D1D1F] tracking-tighter">{{ number_format($expense->amount, 0) }} <span class="text-xs text-gray-400 font-bold">DH</span></span>
                         </div>
+                    @empty
+                        <div class="text-center py-20 opacity-30 font-bold italic">Aucune dépense enregistrée.</div>
+                    @endforelse
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-white rounded-[2.5rem] p-10 border border-[#F5F5F7] shadow-sm">
+                    <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-10">Membres de la coloc</h3>
+                    <div class="space-y-6">
+                        @foreach($members as $m)
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-11 h-11 rounded-2xl bg-black text-white flex items-center justify-center text-xs font-bold border border-gray-100 shadow-sm">
+                                        {{ strtoupper(substr($m->user->name, 0, 1)) }}
+                                    </div>
+                                    <span class="font-bold text-sm text-[#1D1D1F]">{{ $m->user->name }}</span>
+                                </div>
+                                @if($m->role === 'owner')
+                                    <span class="text-[9px] font-bold uppercase bg-[#FFD60A]/10 text-[#FFD60A] px-2 py-1 rounded-lg">Owner</span>
+                                @endif
+                            </div>
+                        @endforeach
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
+    <div id="expenseModal" class="fixed inset-0 z-50 hidden bg-black/5 backdrop-blur-md">
+        <div class="flex items-center justify-center min-h-screen p-6">
+            <div class="bg-white rounded-[3rem] p-12 max-w-lg w-full shadow-2xl border border-gray-100">
+                <h3 class="text-3xl font-bold tracking-tighter mb-10">Nouvelle dépense</h3>
+                
+                <form action="{{ route('expenses.store', $colocation->id) }}" method="POST" class="space-y-6">
+                    @csrf
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-2">Désignation</label>
+                            <input type="text" name="title" required placeholder="Ex: Panier BIM" 
+                                class="w-full border-none bg-[#FAFAFA] rounded-2xl p-5 font-bold focus:ring-2 focus:ring-black">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-2">Prix (DH)</label>
+                                <input type="number" step="0.01" name="amount" required placeholder="0.00" 
+                                    class="w-full border-none bg-[#FAFAFA] rounded-2xl p-5 font-bold text-xl focus:ring-2 focus:ring-black">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-2">Catégorie</label>
+                                <select name="category_id" required class="w-full border-none bg-[#FAFAFA] rounded-2xl p-5 font-bold focus:ring-2 focus:ring-black text-sm">
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-2">Date</label>
+                            <input type="date" name="spent_at" value="{{ date('Y-m-d') }}" required 
+                                class="w-full border-none bg-[#FAFAFA] rounded-2xl p-5 font-bold text-gray-500 focus:ring-2 focus:ring-black">
+                        </div>
+                    </div>
+
+                    <div class="pt-6 space-y-4">
+                        <button type="submit" class="w-full bg-black text-white font-bold py-6 rounded-full text-lg shadow-lg hover:bg-gray-800 transition-all active:scale-95">
+                            Enregistrer ➔
+                        </button>
+                        <button type="button" onclick="document.getElementById('expenseModal').classList.add('hidden')" class="w-full text-gray-400 font-bold text-xs uppercase tracking-widest">Annuler</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

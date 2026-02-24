@@ -1,51 +1,39 @@
 <x-app-layout>
-    <div class="py-12 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div class="max-w-2xl w-full px-6">
+    <div class="min-h-screen flex items-center justify-center bg-[#FAFAFA] p-6 font-sans antialiased">
+        
+        <div class="max-w-xl w-full bg-white rounded-[3rem] p-12 border border-[#F5F5F7] shadow-sm">
             
-            <div class="text-center mb-8">
-                <div class="bg-indigo-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                    </svg>
-                </div>
-                <h2 class="text-3xl font-black text-gray-900">Nouvelle Aventure !</h2>
-                <p class="text-gray-500 mt-2">Créez votre colocation et commencez à gérer vos dépenses ensemble.</p>
+            <div class="text-center mb-12">
+                <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-[0.3em] mb-4 block">Nouvelle étape</span>
+                <h2 class="text-5xl font-bold text-[#1D1D1F] tracking-tighter leading-tight">Créer un espace</h2>
+                <p class="text-gray-400 font-medium mt-4">Lancez votre colocation et commencez à gérer vos comptes.</p>
             </div>
 
-            <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 overflow-hidden border border-gray-100">
-                <form action="{{ route('colocation.store') }}" method="POST" class="p-8">
-                    @csrf
+            <form action="{{ route('colocation.store') }}" method="POST" class="space-y-8">
+                @csrf
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 ml-2">Nom de la colocation</label>
+                    <input type="text" name="name" required placeholder="Ex: Appartement 12" 
+                        class="w-full bg-[#FAFAFA] border-none rounded-2xl p-5 font-bold text-[#1D1D1F] focus:ring-2 focus:ring-black transition-all placeholder-gray-300">
+                </div>
 
-                    <div class="mb-6">
-                        <label for="name" class="block text-sm font-bold text-gray-700 mb-2">Nom de l'espace</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                            </span>
-                            <input type="text" name="name" id="name" required placeholder="Ex: Appat 24, Villa El Amal..." 
-                                class="pl-10 block w-full border-gray-200 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition py-3">
-                        </div>
-                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                    </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 ml-2">Description (Optionnel)</label>
+                    <textarea name="description" rows="3" placeholder="Un petit mot pour vos futurs colocataires..." 
+                        class="w-full bg-[#FAFAFA] border-none rounded-2xl p-5 font-bold text-[#1D1D1F] focus:ring-2 focus:ring-black transition-all placeholder-gray-300"></textarea>
+                </div>
 
-                    <div class="mb-8">
-                        <label for="description" class="block text-sm font-bold text-gray-700 mb-2">Petit mot ou règles (Optionnel)</label>
-                        <textarea name="description" id="description" rows="3" placeholder="Une petite description pour vos futurs membres..."
-                            class="block w-full border-gray-200 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition py-3"></textarea>
-                        <x-input-error :messages="$errors->get('description')" class="mt-2" />
-                    </div>
-
-                    <button type="submit" class="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl hover:bg-indigo-700 transition duration-300 shadow-lg shadow-indigo-100 flex items-center justify-center">
-                        Lancer la colocation 🚀
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-black text-white font-bold py-6 rounded-full text-lg shadow-xl shadow-gray-200 hover:scale-[1.02] active:scale-95 transition-all">
+                        Lancer l'aventure 🚀
                     </button>
                     
-                    <div class="mt-6 text-center">
-                        <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-gray-400 hover:text-gray-600 transition">
-                            Annuler et retourner
-                        </a>
-                    </div>
-                </form>
-            </div>
+                    <a href="{{ route('dashboard') }}" class="block text-center mt-6 text-sm font-bold text-gray-400 hover:text-black transition-colors">
+                        Annuler et retourner
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 </x-app-layout>

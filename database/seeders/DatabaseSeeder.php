@@ -14,12 +14,26 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {
-        // User::factory(10)->create();
+{
+    $colocation = \App\Models\Colocation::create([
+        'name' => 'Mon Appartement Test',
+        'description' => 'Colocation de test pour le développement',
+        'status' => 'active'
+    ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-    }
+    \App\Models\Category::create([
+        'name' => 'Alimentation',
+        'colocation_id' => $colocation->id
+    ]);
+
+    \App\Models\Category::create([
+        'name' => 'Factures',
+        'colocation_id' => $colocation->id
+    ]);
+
+    \App\Models\Category::create([
+        'name' => 'Transport',
+        'colocation_id' => $colocation->id
+    ]);
+}
 }

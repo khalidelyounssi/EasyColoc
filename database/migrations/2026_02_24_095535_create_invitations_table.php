@@ -12,11 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('invitations', function (Blueprint $table) {
-            $table->id();
-            $table->string('email'); 
-            $table->enum('status', ['pending', 'accepted', 'expired'])->default('pending');
-            $table->timestamps();
-        });
+    $table->id();
+    $table->string('email');
+    $table->string('token')->unique(); 
+    $table->foreignId('colocation_id')->constrained()->onDelete('cascade');
+    $table->enum('status', ['pending', 'accepted', 'expired'])->default('pending');
+    $table->timestamps();
+});
     }
 
     /**

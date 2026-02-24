@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        /* خلفية فاتحة مع تدرج دائري خفي */
+        background: radial-gradient(circle at top right, #f8fafc, #f1f5f9);
+        @apply text-slate-900 font-sans antialiased;
+    }
+}
+
+.glass-panel {
+    /* تأثير الزجاج بحدود ناعمة جداً */
+    @apply bg-white/70 backdrop-blur-2xl border border-white/40 shadow-[0_20px_50px_rgba(0,0,0,0.05)] rounded-[2rem];
+}
+
+.accent-card {
+    /* بطاقة ملونة لكسر الروتين */
+    @apply bg-slate-900 text-white rounded-[2rem] p-10 shadow-2xl;
+}

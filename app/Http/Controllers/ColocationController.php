@@ -50,7 +50,8 @@ public function store(Request $request)
     /**
      * Display the specified resource.
      */
-    public function show(Colocation $colocation)
+    // الكود الصحيح لـ ColocationController.php
+        public function show(Colocation $colocation)
 {
     $membership = auth()->user()->memberships()->where('colocation_id', $colocation->id)->first();
 
@@ -59,9 +60,12 @@ public function store(Request $request)
     }
 
     $members = $colocation->memberships()->with('user')->whereNull('left_at')->get();
+    
+    $categories = \App\Models\Category::all(); 
 
-    return view('colocations.show', compact('colocation', 'members', 'membership'));
+    return view('colocations.show', compact('colocation', 'members', 'membership', 'categories'));
 }
+
 
     /**
      * Show the form for editing the specified resource.

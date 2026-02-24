@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\ExpenseController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -18,6 +20,9 @@ Route::middleware(['auth'])->group(function () {
     
     Route::post('/colocation', [ColocationController::class, 'store'])->name('colocation.store');
     Route::get('/colocation/{colocation}', [ColocationController::class, 'show'])->name('colocation.show');
+    Route::post('/colocation/{colocation}/invitations', [InvitationController::class, 'store'])->name('invitations.store');
+    Route::get('/invitations/accept/{token}', [InvitationController::class, 'accept'])->name('invitations.accept');
+    Route::post('/colocation/{colocation}/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
 });
 
 // Route::get('/dashboard', function () {

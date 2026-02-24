@@ -12,6 +12,9 @@ class Membership extends Model
         'role',
         'joined_at',
     ];
+    protected $casts = [
+        'joined_at' => 'datetime',
+    ];
 
     public function colocation()
     {
