@@ -51,9 +51,17 @@ public function store(Request $request)
      * Display the specified resource.
      */
     public function show(Colocation $colocation)
-    {
-        //
+{
+    $membership = auth()->user()->memberships()->where('colocation_id', $colocation->id)->first();
+
+    if (!$membership) {
+        abort(403, 'Action non autorisée.');
     }
+
+    $members = $colocation->memberships()->with('user')->whereNull('left_at')->get();
+
+    return view('colocations.show', compact('colocation', 'members', 'membership'));
+}
 
     /**
      * Show the form for editing the specified resource.
