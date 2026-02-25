@@ -83,9 +83,18 @@
                                     </div>
                                     <span class="font-bold text-sm text-[#1D1D1F] italic">{{ $m->user->name }}</span>
                                 </div>
-                                @if($m->role === 'owner')
-                                    <span class="text-[9px] font-bold uppercase bg-yellow-50 text-yellow-600 px-2 py-1 rounded-lg italic">Owner</span>
-                                @endif
+                                <div class="flex items-center space-x-2">
+                                    @if($m->role === 'owner')
+                                        <span class="text-[9px] font-bold uppercase bg-yellow-50 text-yellow-600 px-2 py-1 rounded-lg italic">Owner</span>
+                                    @elseif($membership->role === 'owner')
+                                        <form action="{{ route('members.kick', [$colocation->id, $m->user_id]) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment exclure ce membre ? Ses dettes seront transférées à vous.')">
+                                            @csrf
+                                            <button type="submit" class="text-red-400 hover:text-red-600 transition-colors p-1 text-lg">
+                                                ✖
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </div>
                         @endforeach
                     </div>

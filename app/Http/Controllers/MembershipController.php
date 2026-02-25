@@ -2,64 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Membership;
+use App\Models\Colocation; 
+use App\Models\User;
+use App\Models\Settlement;
 use Illuminate\Http\Request;
 
 class MembershipController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function kickMember(Colocation $colocation, User $user)
     {
-        //
-    }
+        $currentMembership = auth()->user()->memberships()->where('colocation_id', $colocation->id)->first();
+        
+        if (!$currentMembership || $currentMembership->role !== 'owner') {
+            abort(403, 'Seul le owner peut faire cela.');
+        }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        $owner = $colocation->memberships()->where('role', 'owner')->first()->user;
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        Settlement::whereHas('expense', function($q) use ($colocation) {
+                $q->where('colocation_id', $colocation->id);
+            })
+            ->where('sender_id', $user->id)
+            ->where('status', 'pending')
+            ->update(['sender_id' => $owner->id]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Membership $membership)
-    {
-        //
-    }
+        Settlement::whereHas('expense', function($q) use ($colocation) {
+                $q->where('colocation_id', $colocation->id);
+            })
+            ->where('receiver_id', $user->id)
+            ->where('status', 'pending')
+            ->update(['receiver_id' => $owner->id]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Membership $membership)
-    {
-        //
-    }
+        $colocation->memberships()->where('user_id', $user->id)->update(['left_at' => now()]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Membership $membership)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Membership $membership)
-    {
-        //
+        return back()->with('success', 'Membre retiré et dettes transférées.');
     }
 }

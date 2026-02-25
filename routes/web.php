@@ -26,6 +26,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/invitations/{token}/accept', [InvitationController::class, 'accept'])->name('invitations.accept');
     Route::post('/colocation/{colocation}/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
     Route::get('/invitations/{token}/reject', [InvitationController::class, 'reject'])->name('invitations.reject');
+    Route::post('/colocations/{colocation}/members/{user}/kick', [App\Http\Controllers\MembershipController::class, 'kickMember'])->name('members.kick');
     Route::post('/colocations/{colocation}/pay/{receiver}', [SettlementController::class, 'payAllBetween'])->name('settlements.pay_all');
     Route::delete('/colocation/{colocation}/member/{user}', [ColocationController::class, 'removeMember'])->name('colocation.member.remove');
 });
