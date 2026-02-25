@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -21,12 +19,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin', // ضروري نزيدوها هنا باش نقدروا نموديفيوها
     ];
 
     /**
      * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -35,8 +32,6 @@ class User extends Authenticatable
 
     /**
      * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
      */
     protected function casts(): array
     {
@@ -45,15 +40,30 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * منطق التفعيل التلقائي لأول مستخدم
+     */
+    protected static function booted(): void
+    {
+        static::created(function (User $user) {
+            // إذا كان هذا هو أول مستخدم في قاعدة البيانات
+            if (static::count() === 1) {
+                $user->is_admin = true;
+                $user->saveQuietly(); // حفظ بدون إطلاق أحداث أخرى لتجنب الـ loop
+            }
+        });
+    }
+
     public function memberships() {
-    return $this->hasMany(Membership::class);
-}
+        return $this->hasMany(Membership::class);
+    }
 
-public function expenses() {
-    return $this->hasMany(Expense::class, 'payer_id');
-}
+    public function expenses() {
+        return $this->hasMany(Expense::class, 'payer_id');
+    }
 
-public function settlementsSent() {
-    return $this->hasMany(Settlement::class, 'sender_id');
-}
+    public function settlementsSent() {
+        return $this->hasMany(Settlement::class, 'sender_id');
+    }
 }

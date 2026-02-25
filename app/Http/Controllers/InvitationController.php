@@ -43,4 +43,14 @@ class InvitationController extends Controller
 
     return redirect()->route('dashboard')->with('success', 'Vous avez rejoint la colocation !');
 }
+public function reject($token)
+{
+    $invitation = Invitation::where('token', $token)
+        ->where('status', 'pending')
+        ->firstOrFail();
+
+    $invitation->delete();
+
+    return redirect()->route('dashboard')->with('success', 'Invitation refusée.');
+}
 }

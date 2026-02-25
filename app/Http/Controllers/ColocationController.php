@@ -3,91 +3,101 @@
 namespace App\Http\Controllers;
 
 use App\Models\Colocation;
-use Illuminate\Http\Request;
+use App\Models\Expense;
 use App\Models\Membership;
+use App\Models\Category;
+use App\Models\Settlement;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class ColocationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-{
-    return view('colocations.create');
-}
-
-public function store(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
-    ]);
-
-    $colocation = Colocation::create([
-        'name' => $request->name,
-        'description' => $request->description,
-        'status' => 'active',
-    ]);
-
-    Membership::create([
-        'user_id' => auth()->id(),
-        'colocation_id' => $colocation->id,
-        'role' => 'owner',
-        'joined_at' => now(),
-    ]);
-
-    return redirect()->route('dashboard')->with('success', 'Colocation créée avec succès !');
-}
-
-    /**
-     * Display the specified resource.
-     */
-    // الكود الصحيح لـ ColocationController.php
-        public function show(Colocation $colocation)
-{
-    $membership = auth()->user()->memberships()->where('colocation_id', $colocation->id)->first();
-
-    if (!$membership) {
-        abort(403, 'Action non autorisée.');
-    }
-
-    $members = $colocation->memberships()->with('user')->whereNull('left_at')->get();
     
-    $categories = \App\Models\Category::all(); 
-
-    return view('colocations.show', compact('colocation', 'members', 'membership', 'categories'));
-}
-
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Colocation $colocation)
+    public function create()
     {
-        //
+        return view('colocations.create');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Colocation $colocation)
+    
+    public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $colocation = Colocation::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'status' => 'active',
+        ]);
+
+        Membership::create([
+            'user_id' => auth()->id(),
+            'colocation_id' => $colocation->id,
+            'role' => 'owner',
+            'joined_at' => now(),
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Colocation créée !');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Colocation $colocation)
+    
+    public function show(Colocation $colocation)
     {
-        //
+        $membership = auth()->user()->memberships()
+            ->where('colocation_id', $colocation->id)
+            ->first();
+
+        if (!$membership) {
+            abort(403, 'Vous ne faites pas partie de cette colocation.');
+        }
+
+        $members = $colocation->memberships()->with('user')->whereNull('left_at')->get();
+        $categories = Category::all();
+
+        $expenseIds = Expense::where('colocation_id', $colocation->id)->pluck('id');
+
+        $rawSettlements = Settlement::whereIn('expense_id', $expenseIds)
+            ->where('status', 'pending')
+            ->selectRaw('sender_id, receiver_id, SUM(amount) as total')
+            ->groupBy('sender_id', 'receiver_id')
+            ->get();
+
+        $balances = [];
+        foreach ($rawSettlements as $s) {
+            $balances[$s->sender_id] = ($balances[$s->sender_id] ?? 0) - $s->total;
+            $balances[$s->receiver_id] = ($balances[$s->receiver_id] ?? 0) + $s->total;
+        }
+
+        $summary = [];
+        $users = User::whereIn('id', array_keys($balances))->get()->keyBy('id');
+
+        $debtors = [];
+        $creditors = [];
+        foreach ($balances as $userId => $amount) {
+            if ($amount < -0.01) $debtors[$userId] = abs($amount);
+            elseif ($amount > 0.01) $creditors[$userId] = $amount;
+        }
+
+        foreach ($debtors as $dId => $dAmount) {
+            foreach ($creditors as $cId => $cAmount) {
+                if ($dAmount <= 0) break;
+                if ($cAmount <= 0) continue;
+
+                $pay = min($dAmount, $cAmount);
+                $summary[] = (object)[
+                    'sender_id' => $dId,
+                    'receiver_id' => $cId,
+                    'total' => $pay,
+                    'sender' => $users[$dId],
+                    'receiver' => $users[$cId],
+                ];
+                $dAmount -= $pay;
+                $creditors[$cId] -= $pay;
+            }
+        }
+
+        return view('colocations.show', compact('colocation', 'members', 'membership', 'categories', 'summary'));
     }
 }
