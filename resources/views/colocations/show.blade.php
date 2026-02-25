@@ -7,10 +7,17 @@
                 <h1 class="text-5xl font-bold text-[#1D1D1F] tracking-tighter leading-tight italic">{{ $colocation->name }}</h1>
                 <p class="text-gray-500 font-medium mt-4 max-w-xl italic">{{ $colocation->description }}</p>
             </div>
-            <button onclick="document.getElementById('expenseModal').classList.remove('hidden')" 
-                class="bg-black text-white px-10 py-5 rounded-full font-bold text-sm shadow-xl hover:scale-105 transition-all shrink-0 uppercase tracking-widest">
-                + Ajouter une dépense
-            </button>
+            
+            @if($isActive)
+                <button onclick="document.getElementById('expenseModal').classList.remove('hidden')" 
+                    class="bg-black text-white px-10 py-5 rounded-full font-bold text-sm shadow-xl hover:scale-105 transition-all shrink-0 uppercase tracking-widest">
+                    + Ajouter une dépense
+                </button>
+            @else
+                <div class="bg-amber-50 px-6 py-4 rounded-2xl border border-amber-100 flex items-center">
+                    <span class="text-amber-600 font-bold text-[10px] uppercase tracking-widest italic italic">⚠️ Mode lecture seule</span>
+                </div>
+            @endif
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -54,7 +61,7 @@
                                 <div class="flex justify-between items-end pt-4 border-t border-white">
                                     <span class="text-2xl font-black tracking-tighter italic">{{ number_format($debt->total, 0) }} <span class="text-xs text-gray-400 uppercase italic">DH</span></span>
                                     
-                                    @if(auth()->id() === $debt->sender_id)
+                                    @if($isActive && auth()->id() === $debt->sender_id)
                                         <form action="{{ route('settlements.pay_all', [$colocation->id, $debt->receiver_id]) }}" method="POST">
                                             @csrf
                                             <button type="submit" class="bg-black text-white px-5 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest hover:scale-105 transition-all italic">
@@ -86,7 +93,7 @@
                                 <div class="flex items-center space-x-2">
                                     @if($m->role === 'owner')
                                         <span class="text-[9px] font-bold uppercase bg-yellow-50 text-yellow-600 px-2 py-1 rounded-lg italic">Owner</span>
-                                    @elseif($membership->role === 'owner')
+                                    @elseif($membership->role === 'owner' && $isActive)
                                         <form action="{{ route('members.kick', [$colocation->id, $m->user_id]) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment exclure ce membre ? Ses dettes seront transférées à vous.')">
                                             @csrf
                                             <button type="submit" class="text-red-400 hover:text-red-600 transition-colors p-1 text-lg">
@@ -98,16 +105,26 @@
                             </div>
                         @endforeach
                     </div>
-                    @if($membership->role === 'owner')
-                        <div class="pt-8 border-t border-gray-50">
-                            <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6 italic">Inviter</h4>
-                            <form action="{{ route('invitations.store', $colocation->id) }}" method="POST" class="space-y-4">
-                                @csrf
-                                <input type="email" name="email" required placeholder="Email..." class="w-full border-none bg-[#FAFAFA] rounded-2xl p-4 text-xs font-bold italic">
-                                <button type="submit" class="w-full bg-black text-white font-bold py-4 rounded-2xl text-[10px] uppercase tracking-widest hover:bg-gray-800 transition-all shadow-lg italic">Envoyer</button>
-                            </form>
-                        </div>
-                    @endif
+
+                    <div class="pt-8 border-t border-gray-50 space-y-4">
+                        @if($isActive)
+                            @if($membership->role === 'owner')
+                                <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6 italic">Inviter</h4>
+                                <form action="{{ route('invitations.store', $colocation->id) }}" method="POST" class="space-y-4">
+                                    @csrf
+                                    <input type="email" name="email" required placeholder="Email..." class="w-full border-none bg-[#FAFAFA] rounded-2xl p-4 text-xs font-bold italic">
+                                    <button type="submit" class="w-full bg-black text-white font-bold py-4 rounded-2xl text-[10px] uppercase tracking-widest hover:bg-gray-800 transition-all shadow-lg italic">Envoyer</button>
+                                </form>
+                            @else
+                                <form action="{{ route('members.leave', $colocation->id) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment quitter cette colocation ? Vos dettes seront transférées à l\'owner.')">
+                                    @csrf
+                                    <button type="submit" class="w-full text-red-500 border border-red-100 font-bold py-4 rounded-2xl text-[10px] uppercase tracking-widest hover:bg-red-50 transition-all italic">
+                                        Quitter la colocation
+                                    </button>
+                                </form>
+                            @endif
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>

@@ -7,14 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Membership extends Model
 {
     protected $fillable = [
-        'user_id',
-        'colocation_id',
-        'role',
-        'joined_at',
-    ];
+    'user_id', 
+    'colocation_id', 
+    'role', 
+    'joined_at', 
+    'left_at' 
+];
     protected $casts = [
-        'joined_at' => 'datetime',
-    ];
+    'joined_at' => 'datetime',
+    'left_at' => 'datetime',
+];
 
     public function colocation()
     {

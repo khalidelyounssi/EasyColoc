@@ -12,13 +12,11 @@ use Illuminate\Http\Request;
 
 class ColocationController extends Controller
 {
-    
     public function create()
     {
         return view('colocations.create');
     }
 
-    
     public function store(Request $request)
     {
         $request->validate([
@@ -42,7 +40,6 @@ class ColocationController extends Controller
         return redirect()->route('dashboard')->with('success', 'Colocation créée !');
     }
 
-    
     public function show(Colocation $colocation)
     {
         $membership = auth()->user()->memberships()
@@ -50,10 +47,16 @@ class ColocationController extends Controller
             ->first();
 
         if (!$membership) {
-            abort(403, 'Vous ne faites pas partie de cette colocation.');
+            abort(403);
         }
 
-        $members = $colocation->memberships()->with('user')->whereNull('left_at')->get();
+        $isActive = is_null($membership->left_at);
+
+        $members = $colocation->memberships()
+            ->with('user')
+            ->whereNull('left_at')
+            ->get();
+            
         $categories = Category::all();
 
         $expenseIds = Expense::where('colocation_id', $colocation->id)->pluck('id');
@@ -98,6 +101,6 @@ class ColocationController extends Controller
             }
         }
 
-        return view('colocations.show', compact('colocation', 'members', 'membership', 'categories', 'summary'));
+        return view('colocations.show', compact('colocation', 'members', 'membership', 'categories', 'summary', 'isActive'));
     }
 }
