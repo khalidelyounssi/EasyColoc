@@ -164,14 +164,14 @@
 
                             @if($isActive)
                                 <div class="pt-8 border-t border-gray-50 space-y-8">
-                                    <div>
-                                        <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 italic">Inviter</h4>
-                                        <form action="{{ route('invitations.store', $colocation->id) }}" method="POST" class="flex space-x-2">
-                                            @csrf
-                                            <input type="email" name="email" required placeholder="Email..." class="flex-1 border-none bg-[#FAFAFA] rounded-xl p-3 text-[10px] font-bold italic">
+                                        <form action="{{ route('invitations.store', $colocation->id) }}" 
+                                            method="POST" 
+                                            class="flex space-x-2" 
+                                            onsubmit="setTimeout(() => { this.reset(); }, 100);"> @csrf
+                                            <input type="email" name="email" required placeholder="Email..." 
+                                                class="flex-1 border-none bg-[#FAFAFA] rounded-xl p-3 text-[10px] font-bold italic">
                                             <button type="submit" class="bg-black text-white px-4 py-2 rounded-xl text-[10px] font-bold uppercase italic shadow-lg">OK</button>
                                         </form>
-                                    </div>
 
                                     @if($membership->role === 'owner')
                                         <div>
