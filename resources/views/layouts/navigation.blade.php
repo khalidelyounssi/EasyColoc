@@ -1,63 +1,46 @@
-<nav x-data="{ open: false }" class="max-w-7xl mx-auto px-6 mt-6 font-sans antialiased">
-    <div class="bg-white rounded-[2rem] px-10 py-5 flex justify-between items-center shadow-sm border border-[#F5F5F7]">
-        
-        <div class="flex items-center shrink-0">
-            <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 group">
-                <div class="w-11 h-11 bg-black rounded-2xl flex items-center justify-center shadow-lg shadow-black/10 group-hover:scale-105 transition-all">
-                    <span class="text-white font-bold italic text-xl leading-none">E</span>
-                </div>
-                <span class="text-2xl font-bold tracking-tighter text-[#1D1D1F]">EasyColoc</span>
-            </a>
-        </div>
-
-        <div class="hidden sm:flex items-center space-x-12">
-            <a href="{{ route('dashboard') }}" 
-               class="text-sm font-bold uppercase tracking-widest transition-colors {{ request()->routeIs('dashboard') ? 'text-black' : 'text-gray-400 hover:text-black' }}">
-                Dashboard
-            </a>
-            
-            <a href="#" class="text-gray-400 text-sm font-bold hover:text-black transition-colors uppercase tracking-widest">
-                Dépenses
-            </a>
-            
-            <a href="#" class="text-gray-400 text-sm font-bold hover:text-black transition-colors uppercase tracking-widest">
-                Membres
-            </a>
-        </div>
-
-        <div class="hidden sm:flex items-center space-x-6">
-            <div class="flex flex-col items-end border-r pr-6 border-gray-100 text-right">
-                <span class="text-[10px] font-bold text-gray-300 uppercase tracking-widest leading-none mb-1">Session</span>
-                <span class="text-xs font-bold text-black">{{ Auth::user()->name }}</span>
+<aside class="fixed left-0 top-0 h-screen w-72 bg-white border-r border-[#F5F5F7] p-8 flex flex-col justify-between shadow-sm z-50">
+    <div class="space-y-12">
+        <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 group px-2">
+            <div class="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-all">
+                <span class="text-white font-bold italic text-2xl">E</span>
             </div>
+            <span class="text-2xl font-black tracking-tighter text-[#1D1D1F]">EasyColoc</span>
+        </a>
 
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="bg-red-50 text-red-600 px-6 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest border border-red-100 shadow-sm hover:bg-red-600 hover:text-white transition-all">
-                    Déconnexion
-                </button>
-            </form>
-        </div>
-
-        <div class="flex items-center sm:hidden">
-            <button @click="open = ! open" class="p-3 rounded-2xl text-gray-400 bg-gray-50 hover:text-black transition-all">
-                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                    <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
-    </div>
-
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden mt-4">
-        <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 space-y-6 text-center">
-            <a href="{{ route('dashboard') }}" class="block font-bold {{ request()->routeIs('dashboard') ? 'text-black' : 'text-gray-400' }}">Dashboard</a>
-            <a href="#" class="block font-bold text-gray-400">Dépenses</a>
+        <nav class="space-y-2">
+            <span class="text-[10px] font-bold text-gray-300 uppercase tracking-[0.2em] px-4 mb-4 block italic">Menu Principal</span>
             
-            <form method="POST" action="{{ route('logout') }}" class="pt-4 border-t border-gray-50">
-                @csrf
-                <button type="submit" class="text-red-600 font-bold uppercase text-xs tracking-widest">Se déconnecter</button>
-            </form>
-        </div>
+            <a href="{{ route('dashboard') }}" class="flex items-center space-x-4 px-4 py-4 rounded-3xl transition-all {{ request()->routeIs('dashboard') ? 'bg-black text-white shadow-xl italic' : 'text-gray-400 hover:bg-gray-50 hover:text-black' }}">
+                <span class="text-xl">🏠</span>
+                <span class="text-sm font-bold uppercase tracking-widest">Dashboard</span>
+            </a>
+
+            @if(Auth::user()->is_admin)
+                <span class="text-[10px] font-bold text-gray-300 uppercase tracking-[0.2em] px-4 mt-8 mb-4 block italic">Administration</span>
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-4 px-4 py-4 rounded-3xl transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white shadow-xl italic' : 'text-gray-400 hover:bg-indigo-50 hover:text-indigo-600' }}">
+                    <span class="text-xl">🛡️</span>
+                    <span class="text-sm font-bold uppercase tracking-widest">Gestion Globale</span>
+                </a>
+            @endif
+
+            <span class="text-[10px] font-bold text-gray-300 uppercase tracking-[0.2em] px-4 mt-8 mb-4 block italic">Utilisateur</span>
+            <a href="#" class="flex items-center space-x-4 px-4 py-4 rounded-3xl text-gray-400 hover:bg-gray-50 hover:text-black transition-all">
+                <span class="text-xl">📊</span>
+                <span class="text-sm font-bold uppercase tracking-widest">Dépenses</span>
+            </a>
+        </nav>
     </div>
-</nav>
+
+    <div class="pt-8 border-t border-gray-50 space-y-6">
+        <div class="px-4">
+            <span class="text-[10px] font-bold text-gray-300 uppercase tracking-widest block mb-1">Session</span>
+            <p class="text-sm font-black text-black italic truncate">{{ Auth::user()->name }}</p>
+        </div>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="w-full bg-red-50 text-red-600 p-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest border border-red-100 hover:bg-red-600 hover:text-white transition-all shadow-sm">
+                Déconnexion
+            </button>
+        </form>
+    </div>
+</aside>

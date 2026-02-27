@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -26,6 +27,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/invitations/{token}/accept', [InvitationController::class, 'accept'])->name('invitations.accept');
     Route::post('/colocation/{colocation}/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
     Route::get('/invitations/{token}/reject', [InvitationController::class, 'reject'])->name('invitations.reject');
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::post('/admin/users/{user}/toggle-ban', [AdminController::class, 'toggleBan'])->name('admin.users.toggle-ban');
+    Route::post('/colocations/{colocation}/categories', [App\Http\Controllers\CategoryController::class, 'store'])->name('categories.store');
     Route::post('/colocations/{colocation}/leave', [App\Http\Controllers\MembershipController::class, 'leave'])->name('members.leave');
     Route::post('/colocations/{colocation}/members/{user}/kick', [App\Http\Controllers\MembershipController::class, 'kickMember'])->name('members.kick');
     Route::post('/colocations/{colocation}/pay/{receiver}', [SettlementController::class, 'payAllBetween'])->name('settlements.pay_all');

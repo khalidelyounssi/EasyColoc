@@ -19,7 +19,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'is_admin', // ضروري نزيدوها هنا باش نقدروا نموديفيوها
+        'is_admin',// ضروري نزيدوها هنا باش نقدروا نموديفيوها
+        'is_banned', // ضروري نزيدوها هنا باش نقدروا نموديفيوها
     ];
 
     /**
