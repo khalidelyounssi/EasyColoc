@@ -12,7 +12,8 @@ class Settlement extends Model
         'receiver_id', 
         'expense_id', 
         'amount', 
-        'status'
+        'status',
+        'colocation_id'
     ];
 
     public function expense()

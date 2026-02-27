@@ -34,27 +34,35 @@ class MembershipController extends Controller
 }
 
     
-    public function leave(Colocation $colocation)
-    {
-        $userId = auth()->id();
-        $membership = auth()->user()->memberships()
-            ->where('colocation_id', $colocation->id)
-            ->first();
+    // في ملف MembershipController.php
 
-        if (!$membership) abort(404);
+public function leave(Request $request, Colocation $colocation)
+{
+    $user = auth()->user();
+    
+    $ownerMembership = $colocation->memberships()->where('role', 'owner')->first();
+    $owner = $ownerMembership->user; 
 
-        if ($membership->role === 'owner') {
-            return back()->with('error', 'Vous devez nommer un nouveau owner avant de quitter.');
-        }
+    $pendingDebts = Settlement::where('colocation_id', $colocation->id)
+        ->where('sender_id', $user->id)
+        ->where('status', 'pending');
 
-        $owner = $colocation->memberships()->where('role', 'owner')->first()->user;
+    if ($pendingDebts->exists()) {
+        $pendingDebts->update(['sender_id' => $owner->id]);
 
-        $this->transferDebts($colocation, $userId, $owner->id);
-
-        $membership->update(['left_at' => now()]);
-
-        return redirect()->route('dashboard')->with('success', 'Vous avez quitté la colocation.');
+        $user->decrement('reputation_score'); 
+        $message = "Dettes transférées à l'owner. Réputation -1.";
+    } else {
+        $user->increment('reputation_score'); 
+        $message = "Merci ! Réputation +1.";
     }
+
+    $user->memberships()
+        ->where('colocation_id', $colocation->id)
+        ->update(['left_at' => now()]);
+
+    return redirect()->route('dashboard')->with('success', $message);
+}
 
     
     private function transferDebts(Colocation $colocation, $memberId, $ownerId)

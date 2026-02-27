@@ -16,6 +16,9 @@ return new class extends Migration
         $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
         $table->foreignId('receiver_id')->constrained('users')->onDelete('cascade');
         
+        // أضف هذا السطر لربط الدين بالسكن
+        $table->foreignId('colocation_id')->constrained()->onDelete('cascade'); 
+        
         $table->foreignId('expense_id')->constrained()->onDelete('cascade');
         
         $table->decimal('amount', 10, 2);

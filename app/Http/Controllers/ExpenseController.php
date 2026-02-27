@@ -40,6 +40,7 @@ class ExpenseController extends Controller
                         'expense_id' => $expense->id,
                         'amount' => $shareAmount,
                         'status' => 'pending',
+                        'colocation_id' => $colocation->id,
                     ]);
                 }
             }

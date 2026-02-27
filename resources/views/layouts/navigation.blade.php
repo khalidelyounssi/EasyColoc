@@ -23,11 +23,7 @@
                 </a>
             @endif
 
-            <span class="text-[10px] font-bold text-gray-300 uppercase tracking-[0.2em] px-4 mt-8 mb-4 block italic">Utilisateur</span>
-            <a href="#" class="flex items-center space-x-4 px-4 py-4 rounded-3xl text-gray-400 hover:bg-gray-50 hover:text-black transition-all">
-                <span class="text-xl">📊</span>
-                <span class="text-sm font-bold uppercase tracking-widest">Dépenses</span>
-            </a>
+            
         </nav>
     </div>
 
