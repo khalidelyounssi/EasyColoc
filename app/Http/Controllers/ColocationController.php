@@ -40,7 +40,6 @@ class ColocationController extends Controller
         return redirect()->route('dashboard')->with('success', 'Colocation créée !');
     }
 
-    // أضفنا Request $request هنا لاستقبال بيانات الفلتر
 public function show(Request $request, Colocation $colocation)
 {
     $membership = auth()->user()->memberships()
@@ -60,12 +59,10 @@ public function show(Request $request, Colocation $colocation)
         
     $categories = Category::all();
 
-    // --- بداية التعديل: الفلترة حسب الشهر ---
-    $selectedMonth = $request->query('month'); // جلب الشهر من الرابط (URL)
+    $selectedMonth = $request->query('month'); 
 
     $expensesQuery = Expense::where('colocation_id', $colocation->id);
 
-    // إذا اختار المستخدم شهراً معيناً، نقوم بتصفية النتائج
     if ($selectedMonth) {
         $expensesQuery->whereRaw("DATE_FORMAT(spent_at, '%Y-%m') = ?", [$selectedMonth]);
     }
@@ -73,20 +70,15 @@ public function show(Request $request, Colocation $colocation)
     $expenseIds = $expensesQuery->pluck('id');
     $expenses = $expensesQuery->with('user')->orderBy('spent_at', 'desc')->get();
 
-    // جلب قائمة الشهور المتوفرة لعرضها في القائمة المنسدلة (Dropdown)
     $availableMonths = Expense::where('colocation_id', $colocation->id)
         ->selectRaw("DATE_FORMAT(spent_at, '%Y-%m') as month")
         ->distinct()
         ->orderBy('month', 'desc')
         ->pluck('month');
-    // --- نهاية التعديل ---
 
-    // ... السطر 84 و 85 ...
 $rawSettlements = Settlement::whereIn('expense_id', $expenseIds)
     ->where('status', 'pending')
-    // التصحيح: يجب وضع فاصلة بين الأسماء داخل selectRaw
     ->selectRaw('sender_id, receiver_id, SUM(amount) as total')
-    // التصحيح: يجب تمرير كل حقل كعنصر مستقل في مصفوفة
     ->groupBy('sender_id', 'receiver_id')
     ->get();
 
@@ -124,7 +116,6 @@ $rawSettlements = Settlement::whereIn('expense_id', $expenseIds)
         }
     }
 
-    // أضفنا المتغيرات الجديدة للـ View
     return view('colocations.show', compact(
         'colocation', 'members', 'membership', 'categories', 
         'summary', 'isActive', 'expenses', 'availableMonths', 'selectedMonth'

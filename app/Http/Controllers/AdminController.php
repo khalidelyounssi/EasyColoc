@@ -11,22 +11,22 @@ class AdminController extends Controller
 {
     
     public function index()
-    {
-        if (!auth()->user()->is_admin) {
-            abort(403, 'Accès réservé à l\'administrateur global.');
-        }
-
-        $stats = [
-            'total_users' => User::count(),
-            'total_colocations' => Colocation::count(),
-            'total_expenses' => Expense::sum('amount'),
-            'banned_users' => User::where('is_banned', true)->count(),
-        ];
-
-        $users = User::orderBy('created_at', 'desc')->paginate(10);
-
-        return view('admin.dashboard', compact('stats', 'users'));
+{
+    if (!auth()->user()->is_admin) {
+        abort(403);
     }
+
+    $stats = [
+        'total_users' => User::count(),
+        'total_colocations' => Colocation::count(),
+        'total_expenses' => Expense::sum('amount'),
+        'banned_users' => User::where('is_banned', true)->count(),
+    ];
+
+    $users = User::latest()->paginate(10);
+
+    return view('admin.dashboard', compact('stats', 'users'));
+}
 
     
     public function toggleBan(User $user)

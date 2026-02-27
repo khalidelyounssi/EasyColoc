@@ -73,4 +73,20 @@ class MembershipController extends Controller
             ->where('status', 'pending')
             ->update(['receiver_id' => $ownerId]);
     }
+    public function transfer(Colocation $colocation, User $user)
+{
+    $currentOwner = $colocation->memberships()
+        ->where('user_id', auth()->id())
+        ->where('role', 'owner')
+        ->firstOrFail();
+
+    $newOwner = $colocation->memberships()
+        ->where('user_id', $user->id)
+        ->firstOrFail();
+
+    $currentOwner->update(['role' => 'member']);
+    $newOwner->update(['role' => 'owner']);
+
+    return back()->with('success', 'Propriété transférée avec succès à ' . $user->name);
+}
 }
