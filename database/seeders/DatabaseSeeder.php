@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Category;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,19 +22,12 @@ class DatabaseSeeder extends Seeder
         'status' => 'active'
     ]);
 
-    \App\Models\Category::create([
-        'name' => 'Alimentation',
-        'colocation_id' => $colocation->id
-    ]);
-
-    \App\Models\Category::create([
-        'name' => 'Factures',
-        'colocation_id' => $colocation->id
-    ]);
-
-    \App\Models\Category::create([
-        'name' => 'Transport',
-        'colocation_id' => $colocation->id
-    ]);
+   Category::create(['name' => 'Alimentation', 'colocation_id' => null]);
+Category::create(['name' => 'Loyer', 'colocation_id' => null]);
+Category::create(['name' => 'Eau', 'colocation_id' => null]);
+Category::create(['name' => 'Électricité', 'colocation_id' => null]);
+Category::create(['name' => 'Gaz', 'colocation_id' => null]);
+Category::create(['name' => 'Internet', 'colocation_id' => null]);
+Category::create(['name' => 'Transport', 'colocation_id' => null]);
 }
 }

@@ -34,14 +34,21 @@ class MembershipController extends Controller
 }
 
     
-    // في ملف MembershipController.php
 
 public function leave(Request $request, Colocation $colocation)
 {
     $user = auth()->user();
     
+    $membership = $user->memberships()->where('colocation_id', $colocation->id)->first();
+
+    $otherMembersCount = $colocation->memberships()->whereNull('left_at')->where('user_id', '!=', $user->id)->count();
+
+    if ($membership->role === 'owner' && $otherMembersCount > 0) {
+        return back()->with('error', "En tant qu'Owner, vous ne pouvez pas quitter la colocation. Transférez d'abord la propriété à un autre membre."); //
+    }
+
     $ownerMembership = $colocation->memberships()->where('role', 'owner')->first();
-    $owner = $ownerMembership->user; 
+    $owner = $ownerMembership->user;
 
     $pendingDebts = Settlement::where('colocation_id', $colocation->id)
         ->where('sender_id', $user->id)
@@ -49,7 +56,6 @@ public function leave(Request $request, Colocation $colocation)
 
     if ($pendingDebts->exists()) {
         $pendingDebts->update(['sender_id' => $owner->id]);
-
         $user->decrement('reputation_score'); 
         $message = "Dettes transférées à l'owner. Réputation -1.";
     } else {
@@ -57,9 +63,7 @@ public function leave(Request $request, Colocation $colocation)
         $message = "Merci ! Réputation +1.";
     }
 
-    $user->memberships()
-        ->where('colocation_id', $colocation->id)
-        ->update(['left_at' => now()]);
+    $membership->update(['left_at' => now()]);
 
     return redirect()->route('dashboard')->with('success', $message);
 }
