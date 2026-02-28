@@ -25,7 +25,7 @@
 ## 💻 Tech Stack
 
 * **Framework:** Laravel 12
-* **Language:** PHP 8.3
+* **Language:** PHP 5
 * **Database:** MySQL (Structured with Foreign Keys & Cascading Deletes)
 * **Styling:** Tailwind CSS (Custom Apple Minimalist UI)
 

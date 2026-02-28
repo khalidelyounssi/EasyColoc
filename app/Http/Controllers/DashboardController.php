@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invitation;
+use App\Models\User; 
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -29,10 +30,15 @@ class DashboardController extends Controller
             ->with('colocation')
             ->get();
 
+        $allUsers = User::where('id', '!=', $user->id)
+            ->orderBy('reputation_score', 'desc')
+            ->get();
+
         return view('dashboard', compact(
             'activeColocations',
             'historyColocations',
-            'pendingInvitations'
+            'pendingInvitations',
+            'allUsers' 
         ));
     }
 }
