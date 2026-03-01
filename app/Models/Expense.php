@@ -10,7 +10,7 @@ protected $fillable = [
     'title', 
     'amount', 
     'category_id', 
-    'user_id',        // الشخص الذي دفع (المؤدي)
+    'user_id',       
     'colocation_id', 
     'spent_at'
 ];

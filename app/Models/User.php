@@ -19,8 +19,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'is_admin',// ضروري نزيدوها هنا باش نقدروا نموديفيوها
-        'is_banned', // ضروري نزيدوها هنا باش نقدروا نموديفيوها
+        'is_admin',
+        'is_banned', 
     ];
 
     /**
@@ -42,16 +42,13 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * منطق التفعيل التلقائي لأول مستخدم
-     */
+   
     protected static function booted(): void
     {
         static::created(function (User $user) {
-            // إذا كان هذا هو أول مستخدم في قاعدة البيانات
             if (static::count() === 1) {
                 $user->is_admin = true;
-                $user->saveQuietly(); // حفظ بدون إطلاق أحداث أخرى لتجنب الـ loop
+                $user->saveQuietly(); 
             }
         });
     }
